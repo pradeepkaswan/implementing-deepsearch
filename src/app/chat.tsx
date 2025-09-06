@@ -8,12 +8,14 @@ import { useState } from "react";
 import { ChatMessage } from "~/components/chat-message";
 import { SignInModal } from "~/components/sign-in-modal";
 import type { OurMessage } from "~/types";
+import { StickToBottom } from "use-stick-to-bottom";
 
 interface ChatProps {
   userName: string;
   isAuthenticated: boolean;
   chatId: string | undefined;
   initialMessages: OurMessage[];
+  isNewChat: boolean;
 }
 
 export const ChatPage = ({
@@ -21,25 +23,28 @@ export const ChatPage = ({
   isAuthenticated,
   chatId,
   initialMessages,
+  isNewChat,
 }: ChatProps) => {
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const router = useRouter()
-  const [input, setInput] = useState("");
+  const router = useRouter();
   const { messages, sendMessage, status } = useChat<OurMessage>({
     transport: new DefaultChatTransport({
       body: {
         chatId,
+        isNewChat,
       },
     }),
     messages: initialMessages,
     onData: (dataPart) => {
       if (dataPart.type === "data-new-chat-created") {
-        router.push(`?id=${dataPart.data.chatId}`)
+        router.push(`?id=${dataPart.data.chatId}`);
       }
-    }
+    },
   });
 
-  const isLoading = status === "streaming"
+  const [input, setInput] = useState("");
+
+  const isLoading = status === "streaming";
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,34 +54,37 @@ export const ChatPage = ({
       return;
     }
 
-    if (!input.trim()) return;
-
     sendMessage({
       text: input,
     });
-
     setInput("");
   };
 
   return (
     <>
-      <div className="flex flex-1 flex-col">
-        <div
-          className="mx-auto w-full max-w-[65ch] flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-track-gray-800 scrollbar-thumb-gray-600 hover:scrollbar-thumb-gray-500"
-          role="log"
-          aria-label="Chat messages"
+      <div className="flex flex-1 flex-col ">
+        <StickToBottom
+          className="mx-auto w-full overflow-auto max-w-[65ch] flex-1 [&>div]:scrollbar-thin [&>div]:scrollbar-track-gray-800 [&>div]:scrollbar-thumb-gray-600 [&>div]:hover:scrollbar-thumb-gray-500"
+          resize="smooth"
+          initial="smooth"
         >
-          {messages.map((message) => {
-            return (
-              <ChatMessage
-                key={message.id}
-                parts={message.parts}
-                role={message.role}
-                userName={userName}
-              />
-            );
-          })}
-        </div>
+          <StickToBottom.Content
+            className="p-4"
+            role="log"
+            aria-label="Chat messages"
+          >
+            {messages.map((message, index) => {
+              return (
+                <ChatMessage
+                  key={index}
+                  parts={message.parts ?? []}
+                  role={message.role}
+                  userName={userName}
+                />
+              );
+            })}
+          </StickToBottom.Content>
+        </StickToBottom>
 
         <div className="border-t border-gray-700">
           <form onSubmit={handleSubmit} className="mx-auto max-w-[65ch] p-4">

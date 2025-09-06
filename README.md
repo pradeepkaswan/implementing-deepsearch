@@ -1,29 +1,96 @@
-# Create T3 App
+# Implementing DeepSearch
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This project is a Next.js application that implements a "DeepSearch" agent capable of answering questions by searching the web, summarizing content, and providing answers. It uses a variety of modern technologies to accomplish this, including the T3 Stack, NextAuth.js for authentication, Drizzle ORM for database interactions, and the Google AI SDK for its AI capabilities.
 
-## What's next? How do I make an app with this?
-
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
-
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Key Technologies
 
 - [Next.js](https://nextjs.org)
+- [React](https://react.dev/)
 - [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
+- [Drizzle ORM](https://orm.drizzle.team)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Redis](https://redis.io/)
 - [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- [Langfuse](https://langfuse.com/)
+- [Biome](https://biomejs.dev/)
+- [Vitest](https://vitest.dev/)
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Prerequisites
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- [Node.js](https://nodejs.org/en/) (v20 or higher)
+- [pnpm](https://pnpm.io/)
+- [Docker](https://www.docker.com/)
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Setup
 
-## How do I deploy this?
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/implementing-deepsearch.git
+   cd implementing-deepsearch
+   ```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables:**
+   Create a `.env` file by copying the example:
+   ```bash
+   cp .env.example .env
+   ```
+   Then, fill in the required environment variables in the `.env` file.
+
+4. **Start the database and Redis:**
+   ```bash
+   ./start-database.sh
+   ./start-redis.sh
+   ```
+
+5. **Run database migrations:**
+   ```bash
+   pnpm db:push
+   ```
+
+### Running the Development Server
+
+To start the development server, run:
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Project Structure
+
+- `src/`: The main source code of the application.
+  - `app/`: Next.js App Router pages and API routes.
+  - `components/`: React components used throughout the application.
+  - `server/`: Server-side code, including authentication, database, and Redis logic.
+  - `styles/`: Global styles and Tailwind CSS configuration.
+  - `answer-question.ts`: Logic for answering questions based on search results.
+  - `deep-search.ts`: Core DeepSearch agent logic.
+  - `query-rewriter.ts`: Logic for rewriting user queries for better search results.
+  - `run-agent-loop.ts`: The main loop for the search agent.
+  - `serper.ts`: Integration with the Serper API for search results.
+  - `summarize-url.ts`: Logic for summarizing content from URLs.
+- `public/`: Static assets.
+- `drizzle.config.ts`: Configuration for Drizzle ORM.
+- `next.config.js`: Configuration for Next.js.
+- `package.json`: Project dependencies and scripts.
+
+## Available Scripts
+
+- `pnpm dev`: Starts the development server.
+- `pnpm build`: Creates a production build of the application.
+- `pnpm start`: Starts a production server.
+- `pnpm check`: Runs Biome to check for code quality and formatting issues.
+- `pnpm typecheck`: Runs the TypeScript compiler to check for type errors.
+- `pnpm db:generate`: Generates Drizzle ORM migration files.
+- `pnpm db:migrate`: Applies database migrations.
+- `pnpm db:push`: Pushes the database schema to the database.
+- `pnpm db:studio`: Starts the Drizzle ORM studio.
+- `pnpm evals`: Runs `evalite` to watch for and run evaluations.

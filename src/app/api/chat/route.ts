@@ -18,38 +18,36 @@ const langfuse = new Langfuse({
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   const session = await auth();
 
   if (!session) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const body = (await req.json()) as {
+  const body = (await request.json()) as {
     messages: Array<UIMessage>;
-    chatId?: string;
+    chatId: string;
+    isNewChat: boolean;
   };
 
-  const { messages, chatId } = body;
+  const { messages, chatId, isNewChat } = body;
 
   if (!messages.length) {
     return new Response("No messages provided", { status: 400 });
   }
 
-  let currentChatId = chatId;
-  if (!currentChatId) {
-    const newChatId = crypto.randomUUID();
+  if (isNewChat) {
     await upsertChat({
       userId: session.user.id,
-      chatId: newChatId,
+      chatId,
       title:
         messageToString(messages[messages.length - 1]!).slice(0, 50) + "...",
       messages: messages,
     });
-    currentChatId = newChatId;
   } else {
     const chat = await db.query.chats.findFirst({
-      where: eq(chats.id, currentChatId),
+      where: eq(chats.id, chatId),
     });
     if (!chat || chat.userId !== session.user.id) {
       return new Response("Chat not found or unauthorized", { status: 404 });
@@ -57,7 +55,7 @@ export async function POST(req: Request) {
   }
 
   const trace = langfuse.trace({
-    sessionId: currentChatId,
+    sessionId: chatId,
     name: "chat",
     userId: session.user.id,
   });
@@ -68,7 +66,7 @@ export async function POST(req: Request) {
         writer.write({
           type: "data-new-chat-created",
           data: {
-            chatId: currentChatId,
+            chatId: chatId,
           },
           transient: true,
         });
@@ -96,7 +94,7 @@ export async function POST(req: Request) {
 
       await upsertChat({
         userId: session.user.id,
-        chatId: currentChatId,
+        chatId: chatId,
         title: messageToString(lastMessage).slice(0, 50) + "...",
         messages: entireConversation,
       });
