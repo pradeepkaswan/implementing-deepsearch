@@ -7,7 +7,7 @@ DeleteChatButton.tsx -> delete-chat-button.tsx
 
 - Where possible, adjust type imports so they use 'type' on the entire import, not just the specific named imports:
 
-import { type Message } from "ai"; -> import type { Message } from "ai";
+import { type UIMessage } from "ai"; -> import type { UIMessage } from "ai";
 
 - Use lucide-react for icons
 

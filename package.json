@@ -15,13 +15,19 @@
     "dev": "next dev --turbo",
     "preview": "next build && next start",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "evals": "evalite watch"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.12",
+    "@ai-sdk/react": "^2.0.33",
     "@auth/drizzle-adapter": "^1.7.2",
     "@t3-oss/env-nextjs": "^0.12.0",
+    "ai": "^5.0.33",
+    "cheerio": "^1.1.2",
     "drizzle-orm": "^0.41.0",
     "ioredis": "^5.7.0",
+    "langfuse": "^3.38.5",
     "lucide-react": "^0.542.0",
     "next": "^15.2.3",
     "next-auth": "5.0.0-beta.25",
@@ -30,6 +36,7 @@
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "simple-icons": "^15.13.0",
+    "vite-tsconfig-paths": "^5.1.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -38,11 +45,14 @@
     "@types/node": "^20.14.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "autoevals": "^0.0.131",
     "dotenv": "^17.2.2",
     "drizzle-kit": "^0.30.5",
+    "evalite": "^0.11.5",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.15",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
   },
   "ct3aMetadata": {
     "initVersion": "7.39.3"

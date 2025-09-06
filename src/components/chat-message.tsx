@@ -1,7 +1,11 @@
 import ReactMarkdown, { type Components } from "react-markdown";
+import type { UIMessage } from "ai";
+import type { OurMessage } from "~/types";
+
+type MessagePart = NonNullable<UIMessage["parts"]>[number];
 
 interface ChatMessageProps {
-  text: string;
+  parts: MessagePart[];
   role: string;
   userName: string;
 }
@@ -38,7 +42,7 @@ const Markdown = ({ children }: { children: string }) => {
   return <ReactMarkdown components={components}>{children}</ReactMarkdown>;
 };
 
-export const ChatMessage = ({ text, role, userName }: ChatMessageProps) => {
+export const ChatMessage = ({ role, userName, parts }: ChatMessageProps) => {
   const isAI = role === "assistant";
 
   return (
@@ -53,9 +57,22 @@ export const ChatMessage = ({ text, role, userName }: ChatMessageProps) => {
         </p>
 
         <div className="prose prose-invert max-w-none">
-          <Markdown>{text}</Markdown>
+          {parts.map((part, index) => {
+            if (part.type === "text") {
+              return <Markdown key={index}>{part.text}</Markdown>;
+            }
+            return null;
+          })}
         </div>
       </div>
     </div>
   );
+};
+
+const Sources = ({ sources }: { sources: Source[] }) => {
+  return <div></div>;
+};
+
+const ReasoningSteps = ({ parts }: { parts: OurMessage["parts"] }) => {
+  return <div></div>;
 };
