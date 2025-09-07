@@ -24,5 +24,5 @@ export type OurMessage = UIMessage<
 
 export type GuardrailResult = {
   classification: "allow" | "refuse";
-  reason?: "string";
+  reason?: string;
 };
